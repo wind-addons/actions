@@ -1,33 +1,38 @@
+// Load environment variables
 const releaseEvent = process.env.RELEASE_EVENT_JSON;
 const repository = process.env.REPOSITORY_NAME;
 const discordWebHook = process.env.DISCORD_WEBHOOK;
-const emoji = process.env.RELEASE_TITLE_EMOJI || '🚀';
+const barImage = process.env.BAR_IMAGE;
+const rocketImage = process.env.ROCKET_IMAGE;
 
 if (!releaseEvent || !repository || !discordWebHook) {
   console.error('Missing required environment variables');
   process.exit(1);
 }
 
+// Construct the Discord message
 const release = JSON.parse(releaseEvent);
 const sections = release.body.split('\n\n');
 
 const embed = {
-  title: `${emoji} ${release.name}`,
+  title: release.name,
   url: release.html_url,
   color: 39423,
   author: {
     name: repository,
     url: `https://github.com/${repository}`,
-    icon_url:
-      'https://github.com/wind-addons/resources/blob/main/dist/icons/toolchains-logo.png?raw=true',
   },
   fields: [],
   footer: {
-    text: release.author.name,
+    text: release.author.login,
     icon_url: release.author.avatar_url,
   },
   timestamp: release.published_at,
 };
+
+// Add images if provided
+if (rocketImage) embed.author.icon_url = rocketImage;
+if (barImage) embed.image = { url: barImage };
 
 for (var i = 0; i < sections.length; i++) {
   var section = sections[i];
