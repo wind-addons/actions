@@ -1,10 +1,9 @@
 const releaseEvent = process.env.RELEASE_EVENT_JSON;
 const repository = process.env.REPOSITORY_NAME;
-const repositoryUrl = process.env.REPOSITORY_URL;
 const discordWebHook = process.env.DISCORD_WEBHOOK;
 const emoji = process.env.RELEASE_TITLE_EMOJI || '🚀';
 
-if (!releaseEvent || !repository || !repositoryUrl || !discordWebHook) {
+if (!releaseEvent || !repository || !discordWebHook) {
   console.error('Missing required environment variables');
   process.exit(1);
 }
@@ -18,7 +17,7 @@ const embed = {
   color: 39423,
   author: {
     name: repository,
-    url: repositoryUrl,
+    url: `https://github.com/${repository}`,
     icon_url:
       'https://github.com/wind-addons/resources/blob/main/dist/icons/toolchains-logo.png?raw=true',
   },
@@ -33,28 +32,29 @@ const embed = {
 for (var i = 0; i < sections.length; i++) {
   var section = sections[i];
 
+  var lines = section.split('\n').filter((line) => line.trim() !== '');
+
   // Last line: Full Changelog
-  if (section.startsWith('**Full Changelog**')) {
+  if (lines[0].startsWith('**Full Changelog**')) {
     embed.description = `[Full Changelog](${
-      section.match(/https:\/\/\S+/)[0]
+      lines[0].match(/https:\/\/\S+/)[0]
     })`;
     continue;
   }
 
-  var lines = section.split('\n');
   var title = lines.shift().replace('##', '').trim();
 
   // Style list items
   var body = lines.map((line) => line.replace(/^\*/, '>')).join('\n');
 
   // Replace GitHub links with markdown links
-  body = value.replace(
+  body = body.replace(
     /https:\/\/github.com\/fang2hou\/github-actions-test\/pull\/(\d+)/g,
     '[PR #$1]($&)'
   );
 
   // Replace GitHub usernames with markdown links
-  body = value.replace(/@(\w+)/g, '[`@$1`](http://github.com/$1)');
+  body = body.replace(/@(\w+)/g, '[`@$1`](https://github.com/$1)');
 
   embed.fields.push({
     name: `${title}`,
