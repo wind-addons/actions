@@ -41,7 +41,7 @@ for (var i = 0; i < sections.length; i++) {
 
   // Last line: Full Changelog
   if (lines[0].startsWith('**Full Changelog**')) {
-    embed.description = `[Full Changelog](${
+    embed.description = `[📖 **Full Changelog**](${
       lines[0].match(/https:\/\/\S+/)[0]
     })`;
     continue;
