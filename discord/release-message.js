@@ -54,7 +54,7 @@ for (var i = 0; i < sections.length; i++) {
 
   // Replace GitHub links with markdown links
   body = body.replace(
-    /https:\/\/github.com\/fang2hou\/github-actions-test\/pull\/(\d+)/g,
+    /https:\/\/github.com\/\S+\/pull\/(\d+)/g,
     '[PR #$1]($&)'
   );
 
